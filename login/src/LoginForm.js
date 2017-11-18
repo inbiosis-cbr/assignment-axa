@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-class TodoApp extends React.Component {
+class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = { items: [], text: '' };
@@ -12,16 +12,27 @@ class TodoApp extends React.Component {
   render() {
     return (
       <div>
-        <h3>TODO</h3>
-        <TodoList items={this.state.items} />
+        <h3>Login</h3>
         <form onSubmit={this.handleSubmit}>
-          <input
-            onChange={this.handleChange}
-            value={this.state.text}
-          />
-          <button>
-            Add #{this.state.items.length + 1}
-          </button>
+          <div>
+            <label>Username: </label>
+            <input
+              value={this.state.username}
+            />
+          </div>
+
+          <div>
+            <label>Password: </label>
+            <input 
+              type={'password'}
+            />
+          </div>
+
+          <div>
+            <button>
+              Submit
+            </button>
+          </div>
         </form>
       </div>
     );
@@ -47,18 +58,6 @@ class TodoApp extends React.Component {
   }
 }
 
-class TodoList extends React.Component {
-  render() {
-    return (
-      <ul>
-        {this.props.items.map(item => (
-          <li key={item.id}>{item.text}</li>
-        ))}
-      </ul>
-    );
-  }
-}
+ReactDOM.render(<LoginForm />, document.getElementById('root'));
 
-ReactDOM.render(<TodoApp />, document.getElementById('root'));
-
-export default TodoApp;
+export default LoginForm;
