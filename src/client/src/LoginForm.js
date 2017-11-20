@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import CryptoJS from 'crypto-js';
+import Config from './Config';
+import Api from './Api';
 
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { items: [], text: '' };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.state = { 
+      username: '', 
+      password: ''
+    };
   }
 
   render() {
@@ -17,14 +21,16 @@ class LoginForm extends React.Component {
           <div>
             <label>Username: </label>
             <input
-              value={this.state.username}
+              value={this.state.username} 
+              onChange={this.handleUsernameChange} 
             />
           </div>
 
           <div>
             <label>Password: </label>
             <input 
-              type={'password'}
+              type={'password'} 
+              onChange={this.handlePasswordChange} 
             />
           </div>
 
@@ -38,23 +44,38 @@ class LoginForm extends React.Component {
     );
   }
 
-  handleChange(e) {
-    this.setState({ text: e.target.value });
+  handleUsernameChange(e) {
+    this.setState({ 
+      username: e.target.value
+    });
+  }
+
+  handlePasswordChange(e) {
+    this.setState({ 
+      password: e.target.value
+    });
+  }
+
+  handleLoginAPI(data){
+    Api.auth(data);
   }
 
   handleSubmit(e) {
     e.preventDefault();
-    if (!this.state.text.length) {
+    if (!this.state.username.length || !this.state.password.length) {
+      alert('Username and Password is required for login!');
       return;
     }
-    const newItem = {
-      text: this.state.text,
-      id: Date.now()
+
+    let data = {
+      username: this.state.username,
+      password: this.state.password
     };
-    this.setState(prevState => ({
-      items: prevState.items.concat(newItem),
-      text: ''
-    }));
+
+    {/* Encrypt the data before fetching api. */}
+    let hashdata = CryptoJS.AES.encrypt(JSON.stringify(data), Config.encrypt_key);
+    console.log(hashdata);
+    this.handleLoginAPI(hashdata);
   }
 }
 

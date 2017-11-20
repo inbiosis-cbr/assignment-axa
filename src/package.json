@@ -1,6 +1,6 @@
 {
-  "name": "src",
-  "version": "0.0.0",
+  "name": "axa_assignment",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "concurrently \"node ./bin/www\" \"npm run client\"",
@@ -9,6 +9,7 @@
   "dependencies": {
     "body-parser": "~1.18.2",
     "cookie-parser": "~1.4.3",
+    "crypto-js": "^3.1.9-1",
     "debug": "~2.6.9",
     "express": "~4.15.5",
     "jsonwebtoken": "^8.1.0",
