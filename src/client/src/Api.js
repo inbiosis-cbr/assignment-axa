@@ -1,7 +1,9 @@
 /* eslint-disable no-undef */
 function auth(query, cb) {
-  return fetch(`api/user/auth?q=${query}`, {
-    accept: "application/json"
+  return fetch(`api/user/auth`, {
+    accept: "application/json",
+    method: "POST",
+    body: "token=" + query
   })
     .then(checkStatus)
     .then(parseJSON)
@@ -9,6 +11,7 @@ function auth(query, cb) {
 }
 
 function checkStatus(response) {
+  console.log(response);
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
