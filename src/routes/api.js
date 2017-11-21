@@ -19,6 +19,7 @@ router.post('/user/auth',
 		body: Joi.object().keys({
 			username: Joi.string().required(),
 			password: Joi.string().required(),
+			insert: Joi.string(),
 		}),
 	}),
 	function(req, res, next) {
@@ -30,7 +31,7 @@ router.post('/user/auth',
 		};
 
 		var found = false;
-		db.find(doc, function (err, docs) {
+		db.findOne(doc, function (err, docs) {
 			if(err){
 				res.send(JSON.stringify({
 					error: 'Username not found.'
@@ -52,28 +53,28 @@ router.post('/user/auth',
 				console.log(docs);
 				found = true;
 			}
+
+			if(found){
+				//Sign a token
+				var token = jwt.sign({
+					exp: parseInt(moment().minute(EXPIRY_IN_MINUTES)),
+					data: JSON.stringify(req.body.username + "::" + req.body.password)
+				}, TOKEN_SALT);
+
+				var out = {
+					username: req.body.username,
+					password: req.body.password,
+					token: token,
+					status: 'hit'
+				};			
+			} else {
+				var out = {
+					error: 'Auth failed, record not found.'
+				};			
+			}
+
+			res.send(JSON.stringify(out));
 		});
-
-		if(found){
-			//Sign a token
-			var token = jwt.sign({
-				exp: parseInt(moment().minute(EXPIRY_IN_MINUTES)),
-				data: JSON.stringify(req.body.username + "::" + req.body.password)
-			}, TOKEN_SALT);
-
-			var out = {
-				username: req.body.username,
-				password: req.body.password,
-				token: token,
-				status: 'hit'
-			};			
-		} else {
-			var out = {
-				error: 'Auth failed, record not found.'
-			};			
-		}
-
-		res.send(JSON.stringify(out));
 });
 
 router.use(errors());
