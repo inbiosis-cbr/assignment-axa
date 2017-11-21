@@ -23,18 +23,56 @@ router.post('/user/auth',
 	}),
 	function(req, res, next) {
 
-		//Sign a token
-		var token = jwt.sign({
-			exp: parseInt(moment().minute(EXPIRY_IN_MINUTES)),
-			data: JSON.stringify(req.body.username + "::" + req.body.password)
-		}, TOKEN_SALT);
-
-		var out = {
+		//Do db import
+		var doc = { 
 			username: req.body.username,
 			password: req.body.password,
-			token: token,
-			status: 'hit'
 		};
+
+		var found = false;
+		db.find(doc, function (err, docs) {
+			if(err){
+				res.send(JSON.stringify({
+					error: 'Username not found.'
+				}));
+			}
+			if(docs.length == 0){
+
+				if(req.body.insert == undefined){
+					console.log('No insert flag for new insert.');
+					return;
+				}
+
+				if(req.body.insert != undefined){
+					db.insert(doc, function (err, newDoc) {
+						console.log(newDoc);
+					});
+				}
+			} else {
+				console.log(docs);
+				found = true;
+			}
+		});
+
+		if(found){
+			//Sign a token
+			var token = jwt.sign({
+				exp: parseInt(moment().minute(EXPIRY_IN_MINUTES)),
+				data: JSON.stringify(req.body.username + "::" + req.body.password)
+			}, TOKEN_SALT);
+
+			var out = {
+				username: req.body.username,
+				password: req.body.password,
+				token: token,
+				status: 'hit'
+			};			
+		} else {
+			var out = {
+				error: 'Auth failed, record not found.'
+			};			
+		}
+
 		res.send(JSON.stringify(out));
 });
 
