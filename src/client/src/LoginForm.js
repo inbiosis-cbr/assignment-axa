@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import CryptoJS from 'crypto-js';
 import Config from './Config';
@@ -60,8 +60,12 @@ class LoginForm extends React.Component {
     });
   }
 
-  handleLoginAPI(data){
-    Api.auth(data);
+  handleLoginAPI(data, authCallback){
+    Api.auth(data, authCallback);
+  }
+
+  redirectAuth(){
+    
   }
 
   handleSubmit(e) {
@@ -76,10 +80,9 @@ class LoginForm extends React.Component {
       password: this.state.password
     };
 
-    {/* Encrypt the data before fetching api. */}
     let hashdata = CryptoJS.AES.encrypt(JSON.stringify(data), Config.encrypt_key);
-    console.log(hashdata);
-    this.handleLoginAPI(hashdata);
+    /*console.log('Hash', hashdata.toString());*/
+    this.handleLoginAPI(hashdata.toString(), this.redirectAuth);
   }
 }
 

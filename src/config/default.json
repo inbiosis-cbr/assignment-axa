@@ -7,6 +7,9 @@
     "auth": {
       "expiry_in_minutes": 15,
       "secret": "axa@2017"
+    },
+    "login": {
+      "encrypt_key" : "axa-assignment-2017"
     }
   }
 }

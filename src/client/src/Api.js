@@ -1,17 +1,37 @@
 /* eslint-disable no-undef */
 function auth(query, cb) {
+  //console.log("token=" + query + "&check=1");
+
+  var payload = {
+      token: query,
+  };
+
+  var headers = new Headers();
+
+  headers.append('Accept', 'application/json'); // This one is enough for GET requests
+  headers.append('Content-Type', 'application/json'); // This one sends body
+
+  //var data = new FormData();
+  //data.append( "token", query);
+  //data.append( "json",  );
+  var data = JSON.stringify(payload);
+
   return fetch(`api/user/auth`, {
-    accept: "application/json",
-    method: "POST",
-    body: "token=" + query
-  })
-    .then(checkStatus)
+    'method': "POST",
+    'body': data,
+    'headers': headers
+  }).then(checkStatus)
     .then(parseJSON)
     .then(cb);
+
+//    .then(function(res){ return res.json(); })
+//    .then(function(data){ alert( JSON.stringify( data ) ) })
+
 }
 
 function checkStatus(response) {
   console.log(response);
+  console.log('Status', response.status);
   if (response.status >= 200 && response.status < 300) {
     return response;
   }

@@ -17,18 +17,37 @@ var Datastore = require('nedb'),
 router.post('/user/auth', 
 	celebrate({
 		body: Joi.object().keys({
-			username: Joi.string().required(),
-			password: Joi.string().required(),
+			token: Joi.string().required(),
+			username: Joi.string(),
+			password: Joi.string(),
 			insert: Joi.string(),
 		}),
 	}),
 	function(req, res, next) {
 
-		//Do db import
-		var doc = { 
-			username: req.body.username,
-			password: req.body.password,
-		};
+		console.log(req.body);
+
+		// Decrypt
+		var secret = config.get('server.login.encrypt_key');
+		var bytes  = cryptoJS.AES.decrypt(req.body.token, secret);
+		console.log(req.body.token, bytes.toString(), secret);
+
+		try {
+			var doc = JSON.parse(bytes.toString(cryptoJS.enc.Utf8));
+			console.log('decrypted:', doc);
+		}
+		catch (e) {
+			console.log('Error on JSON.parse: ', e);
+		}
+
+		if(doc == undefined 
+			&& (req.body.username == undefined || req.body.password != undefined)){
+			//Do db import
+			doc = { 
+				username: req.body.username,
+				password: req.body.password,
+			};
+		}
 
 		var found = false;
 		db.findOne(doc, function (err, docs) {
@@ -37,7 +56,7 @@ router.post('/user/auth',
 					error: 'Username not found.'
 				}));
 			}
-			if(docs.length == 0){
+			if(!docs){
 
 				if(req.body.insert == undefined){
 					console.log('No insert flag for new insert.');
