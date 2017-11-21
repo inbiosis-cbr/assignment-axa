@@ -1,0 +1,12 @@
+{
+  // Server module configs
+  "server": {
+    "db": {
+      "filename": "database.dat"
+    },
+    "auth": {
+      "expiry_in_minutes": 15,
+      "secret": "axa@2017"
+    }
+  }
+}
