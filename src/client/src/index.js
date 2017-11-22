@@ -3,8 +3,10 @@ import ReactDOM from 'react-dom';
 import {
   BrowserRouter as Router,
   Route,
-  Link
-} from 'react-router-dom';
+  Link,
+  Redirect,
+  withRouter
+} from 'react-router-dom'
 import './base.css';
 import './index.css';
 import './App.css';
@@ -39,21 +41,21 @@ const Auth = () => (
   </div>
 )
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          Simple login form with <strong>React</strong>
-        </p>
-        <LoginForm />
-      </div>
-    );
-  }
+class App extends React.Component {
+  	render() {
+    	return (
+			<div className="App">
+				<header className="App-header">
+					<img src={logo} className="App-logo" alt="logo" />
+					<h1 className="App-title">Welcome to React</h1>
+				</header>
+				<p className="App-intro">
+					Simple login form with <strong>React</strong>
+				</p>
+				<LoginForm />
+			</div>
+    	);
+  	}
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
