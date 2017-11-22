@@ -86,6 +86,7 @@ class LoginForm extends React.Component {
   }
 }
 
-ReactDOM.render(<LoginForm />, document.getElementById('root'));
+/* No need ReactDOM render for this */
+/*ReactDOM.render(<LoginForm />, document.getElementById('root'));*/
 
 export default LoginForm;
