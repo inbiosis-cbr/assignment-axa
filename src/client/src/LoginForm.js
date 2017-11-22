@@ -1,12 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Redirect,
-  withRouter
-} from 'react-router-dom'
 import CryptoJS from 'crypto-js';
 import Config from './Config';
 import Api from './Api';
@@ -17,7 +10,8 @@ class LoginForm extends React.Component {
     this.state = { 
       username: '', 
       password: '',
-      redirectToReferrer: false
+      isAuthenticated: false,
+      authUser: ''
     };
 
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
@@ -26,16 +20,6 @@ class LoginForm extends React.Component {
   }
 
   render() {
-    //const { from } = this.props.location.state || { from: { pathname: '/' } }
-    const { from } = { from: { pathname: '/' } }
-    const { redirectToReferrer } = this.state.redirectToReferrer
-
-    if (redirectToReferrer) {
-        return (
-          <Redirect to={from}/>
-        )
-    }
-
     return (
       <div>
         <h3>Login</h3>
@@ -82,8 +66,11 @@ class LoginForm extends React.Component {
     Api.auth(data, authCallback);
   }
 
-  redirectAuth(){
-    
+  redirectAuth(response){
+    console.log(response);
+    this.setState({
+      authUser: true
+    });
   }
 
   handleSubmit(e) {
