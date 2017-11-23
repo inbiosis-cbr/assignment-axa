@@ -25,7 +25,14 @@ const User = () => (
 class App extends Component {
 
   state = {
-    redirectToReferrer: false
+    redirectToReferrer: false,
+    isAuthenticated: false
+  }
+
+  handleLogin = (response) => {
+    if(response.token){
+      this.setState({isAuthenticated: true});
+    }
   }
 
   render() {
@@ -33,18 +40,6 @@ class App extends Component {
     //const { from } = this.props.location.state || { from: { pathname: '/' } }
     const { from } = { from: { pathname: '/' } }
     const { redirectToReferrer } = this.state.redirectToReferrer
-
-    const UserAuth = {
-      isAuthenticated: false,
-      authenticate(cb) {
-        this.setState({ isAuthenticated: true });
-        setTimeout(cb, 100)
-      },
-      signout(cb) {
-        this.setState({ isAuthenticated: false });
-        setTimeout(cb, 100)
-      }
-    }
 
     if (redirectToReferrer) {
       return (
@@ -67,7 +62,7 @@ class App extends Component {
         <p className="App-intro">
           Simple login form with <strong>React</strong>
         </p>
-        <LoginForm userauth={UserAuth} />
+        <LoginForm handleLogin={this.handleLogin} />
       </div>
     );
   }

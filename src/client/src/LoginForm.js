@@ -18,6 +18,52 @@ class LoginForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  handleUsernameChange(e) {
+    this.setState({ 
+      username: e.target.value
+    });
+  }
+
+  handlePasswordChange(e) {
+    this.setState({ 
+      password: e.target.value
+    });
+  }
+
+  handleLoginAPI(data, authCallback){
+    Api.auth(data, authCallback);
+  }
+
+  redirectAuth = (response) => {
+    //console.log(response, response.token);
+    /*
+    console.log(this.props.setAuth);
+    if(response.token){
+      this.props.setAuth.authenticate(() => {
+        this.props.setAuth.setState({ isAuthenticated: true, authUser: null });
+      });
+    }
+    */
+    this.props.handleLogin(response);
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    if (!this.state.username.length || !this.state.password.length) {
+      alert('Username and Password is required for login!');
+      return;
+    }
+
+    let data = {
+      username: this.state.username,
+      password: this.state.password
+    };
+
+    let hashdata = CryptoJS.AES.encrypt(JSON.stringify(data), Config.encrypt_key);
+    /*console.log('Hash', hashdata.toString());*/
+    this.handleLoginAPI(hashdata.toString(), this.redirectAuth);
+  }
+
   render() {
     return (
       <div>
@@ -49,45 +95,6 @@ class LoginForm extends React.Component {
     );
   }
 
-  handleUsernameChange(e) {
-    this.setState({ 
-      username: e.target.value
-    });
-  }
-
-  handlePasswordChange(e) {
-    this.setState({ 
-      password: e.target.value
-    });
-  }
-
-  handleLoginAPI(data, authCallback){
-    Api.auth(data, authCallback);
-  }
-
-  redirectAuth(response){
-    console.log(response);
-    if(response.token){
-      this.props.userauth.authenticate();
-    }
-  }
-
-  handleSubmit(e) {
-    e.preventDefault();
-    if (!this.state.username.length || !this.state.password.length) {
-      alert('Username and Password is required for login!');
-      return;
-    }
-
-    let data = {
-      username: this.state.username,
-      password: this.state.password
-    };
-
-    let hashdata = CryptoJS.AES.encrypt(JSON.stringify(data), Config.encrypt_key);
-    /*console.log('Hash', hashdata.toString());*/
-    this.handleLoginAPI(hashdata.toString(), this.redirectAuth);
-  }
 }
 
 /* No need ReactDOM render for this */
