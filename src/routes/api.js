@@ -50,6 +50,7 @@ router.post('/user/auth',
 		}
 
 		var found = false;
+		var out = {};
 		db.findOne(doc, function (err, docs) {
 			if(err){
 				res.send(JSON.stringify({
@@ -60,12 +61,19 @@ router.post('/user/auth',
 
 				if(req.body.insert == undefined){
 					console.log('No insert flag for new insert.');
-					return;
+					out = {
+						error: 'Auth failed, record not found.'
+					}
+					//return;
 				}
 
 				if(req.body.insert != undefined){
 					db.insert(doc, function (err, newDoc) {
 						console.log(newDoc);
+						out = {
+							error: 'Auth failed, record not found.',
+							insert: newDoc
+						}
 					});
 				}
 			} else {
@@ -87,7 +95,7 @@ router.post('/user/auth',
 					status: 'hit'
 				};			
 			} else {
-				var out = {
+				out = {
 					error: 'Auth failed, record not found.'
 				};			
 			}

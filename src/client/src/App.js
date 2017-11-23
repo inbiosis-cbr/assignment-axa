@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
   Route,
-  Link,
-  Redirect,
-  withRouter
+  Redirect
 } from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
+import './base.css';
 import LoginForm from './LoginForm.js';
 
 const Site = () => (  
@@ -35,13 +34,25 @@ class App extends Component {
     const { from } = { from: { pathname: '/' } }
     const { redirectToReferrer } = this.state.redirectToReferrer
 
+    const UserAuth = {
+      isAuthenticated: false,
+      authenticate(cb) {
+        this.setState({ isAuthenticated: true });
+        setTimeout(cb, 100)
+      },
+      signout(cb) {
+        this.setState({ isAuthenticated: false });
+        setTimeout(cb, 100)
+      }
+    }
+
     if (redirectToReferrer) {
       return (
         <Redirect to={from}/>
       )
     }
 
-    if ( this.state.isAuthenticated) {
+    if (this.state.isAuthenticated) {
       return (
         <Redirect to="/user" />
       ) 
@@ -56,7 +67,7 @@ class App extends Component {
         <p className="App-intro">
           Simple login form with <strong>React</strong>
         </p>
-        <LoginForm />
+        <LoginForm userauth={UserAuth} />
       </div>
     );
   }

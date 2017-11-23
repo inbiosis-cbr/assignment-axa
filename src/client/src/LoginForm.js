@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import CryptoJS from 'crypto-js';
 import Config from './Config';
 import Api from './Api';
@@ -11,7 +10,7 @@ class LoginForm extends React.Component {
       username: '', 
       password: '',
       isAuthenticated: false,
-      authUser: ''
+      authUser: false
     };
 
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
@@ -68,9 +67,9 @@ class LoginForm extends React.Component {
 
   redirectAuth(response){
     console.log(response);
-    this.setState({
-      authUser: true
-    });
+    if(response.token){
+      this.props.userauth.authenticate();
+    }
   }
 
   handleSubmit(e) {
